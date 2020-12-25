@@ -49,19 +49,27 @@ const initialState = {
   ]
 };
 
+function clearSpreadsheet() {
+  return {fields: [], entries: []};
+}
+
+function add10Rows(state) {
+  const emptyEntry = {}
+  state.fields.forEach((field) => {
+    emptyEntry[field.name] = "";
+  });
+  return {
+    ...state,
+    entries: state.entries.concat(Array(10).fill(emptyEntry))
+  };
+}
+
 function rootReducer(state = initialState, action) {
   switch (action.type) {
     case CLEAR_SPREADSHEET:
-      return {fields: [], entries: []};
+      return clearSpreadsheet();
     case ADD_10_ROWS:
-      const emptyEntry = {}
-      state.fields.forEach((field) => {
-        emptyEntry[field.name] = "";
-      });
-      return {
-        ...state,
-        entries: state.entries.concat(Array(10).fill(emptyEntry))
-      };
+      return add10Rows(state);
     default:
       return state;
   }
