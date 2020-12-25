@@ -1,0 +1,2 @@
+export const ADD_10_ROWS = "ADD_10_ROWS";
+export const CLEAR_SPREADSHEET = "CLEAR_SPREADSHEET";

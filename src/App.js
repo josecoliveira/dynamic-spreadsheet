@@ -3,7 +3,7 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
-import DynamicSpreadsheet from './DynamicSpreadsheet';
+import DynamicSpreadsheet from './components/DynamicSpreadsheet';
 
 import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
