@@ -15,7 +15,7 @@ class App extends React.Component {
         <Navbar bg="dark" variant="dark">
           <Navbar.Brand href="\">Dynamic Spreadsheet</Navbar.Brand>
         </Navbar>
-        <Container>
+        <Container className="content">
           <DynamicSpreadsheet />
         </Container>
       </div>
