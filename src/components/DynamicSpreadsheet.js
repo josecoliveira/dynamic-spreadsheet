@@ -1,5 +1,5 @@
 import React from 'react';
-import update from 'immutability-helper';
+import produce from "immer";
 
 import { connect } from "react-redux";
 import {
@@ -43,7 +43,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     add10Rows: () => dispatch(add10Rows()),
-    addColumn: (name, type, required, options) => dispatch(addColumn(name, type, required, options)),
+    addColumn: (attribute) => dispatch(addColumn(attribute)),
     clearSpreadsheet: () => dispatch(clearSpreadsheet()),
   };
 }
@@ -54,9 +54,9 @@ class DynamicSpreadsheet extends React.Component {
     this.state = {
       showAddColumnModal: false,
       addColumnName: "",
-      addColumnType: "select",
+      addColumnType: "text",
       addColumnRequired: false,
-      addColumnOptions: ["op1", "op2"],
+      addColumnOptions: [],
       newOptionName: "",
       showAddColumnWarning: false
     }
@@ -87,7 +87,15 @@ class DynamicSpreadsheet extends React.Component {
     if (addColumnName === "" || addColumnType === "" || (addColumnType === "select" && addColumnOptions.length === 0)) {
       this.setState({showAddColumnWarning: true});
     } else {
-      this.props.addColumn(addColumnName, addColumnType, addColumnRequired, addColumnOptions);
+      const attribute = {
+        name: addColumnName,
+        type: addColumnType,
+        required: addColumnRequired
+      };
+      if (addColumnType === "select") {
+        attribute.options = addColumnOptions;
+      }
+      this.props.addColumn(attribute);
       this.setState({
         showAddColumnModal: false,
         addColumnName: "",
@@ -100,20 +108,20 @@ class DynamicSpreadsheet extends React.Component {
   }
 
   handleAddNewOption() {
-    this.setState((state) => {
-      const newState = update(state, {
-        addColumnOptions: {$push: [state.newOptionName]},
-        newOptionName: {$set: ""}
-      });
-      console.log(newState)
-      return newState;
-    });
+    this.setState((state) => (
+      produce(state, (draft) => {
+       draft.addColumnOptions.push(state.newOptionName);
+       draft.newOptionName = "";
+      })
+    ));
   }
 
   handleDeleteOption(index) {
-    this.setState((state) => {
-      return update(state, {addColumnOptions: {$splice: [[index, 1]]}});
-    })
+    this.setState((state) => (
+      produce(state, (draft) => {
+        draft.addColumnOptions.splice(index, 1);
+      })
+    ));
   }
 
   renderButtonToolbar() {
@@ -230,7 +238,6 @@ class DynamicSpreadsheet extends React.Component {
       <Modal show={showAddColumnModal} backdrop="static" keyboard={false}>
         <Modal.Header>
           <Modal.Title>Add Column</Modal.Title>
-          <p>{this.state.newOptionName}</p>
         </Modal.Header>
         <Form>
           <Modal.Body>

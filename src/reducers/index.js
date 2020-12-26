@@ -1,4 +1,4 @@
-import update from 'immutability-helper';
+import produce from 'immer';
 
 import {
   ADD_10_ROWS,
@@ -63,40 +63,24 @@ function add10Rows(state) {
   state.attributes.forEach((attribute) => {
     emptyEntry[attribute.name] = "";
   });
-  return update(state, {
-    entries: {$push: Array(10).fill(emptyEntry)}
+  return produce(state, (draft) => {
+    draft.entries.push(...(Array(10).fill(emptyEntry)));
   });
 }
 
-function addColumn(state, name, type, required, options) {
-  const attribute = {
-    name,
-    type,
-    required
-  }
-  if (type === "select") {
-    attribute.options = options;
-  }
-  console.log("Update")
-  return update(state, {
-    attributes: {$push: [attribute]},
-    entries: {
-      $apply: (entries) => {
-        return entries.map((entry) => update(entry, {
-          [name]: {$set: ""}
-        }))
-      }
-    }
-  })
+function addColumn(state, attribute) {
+  return produce(state, (draft) => {
+    draft.attributes.push(attribute);
+    draft.entries.map((entry) => {
+      entry[attribute.name] = "";
+      return entry;
+    });
+  });
 }
 
 function changeCell(state, index, attribute, content) {
-  return update(state, {
-    entries: {
-      [index]: {
-        [attribute]: {$set: content}
-      }
-    }
+  return produce(state, (draft) => {
+    draft.entries[index][attribute] = content;
   });
 }
 
@@ -106,18 +90,23 @@ function clearSpreadsheet() {
 
 function rootReducer(state = initialState, action) {
   switch (action.type) {
-    case ADD_10_ROWS:
+    case ADD_10_ROWS: {
       return add10Rows(state);
-    case ADD_COLUMN:
-      const {name, type, required, options} = action.payload;
-      return addColumn(state, name, type, required, options);
-    case CHANGE_CELL:
+    }
+    case ADD_COLUMN: {
+      const {attribute} = action.payload;
+      return addColumn(state, attribute);
+    }
+    case CHANGE_CELL: {
       const {index, attribute, content} = action.payload;
       return changeCell(state, index, attribute, content);
-    case CLEAR_SPREADSHEET:
+    }
+    case CLEAR_SPREADSHEET: {
       return clearSpreadsheet();
-    default:
+    }
+    default: {
       return state;
+    }
   }
 }
 

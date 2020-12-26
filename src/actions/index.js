@@ -9,14 +9,11 @@ export function add10Rows() {
   return {type: ADD_10_ROWS}
 }
 
-export function addColumn(name, type, required, options) {
+export function addColumn(attribute) {
   return {
     type: ADD_COLUMN,
     payload: {
-      name,
-      type,
-      required,
-      options
+      attribute
     }
   }
 }
