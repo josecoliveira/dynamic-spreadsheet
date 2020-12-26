@@ -1,12 +1,24 @@
 import {
-  CLEAR_SPREADSHEET,
-  ADD_10_ROWS
+  ADD_10_ROWS,
+  CHANGE_CELL,
+  CLEAR_SPREADSHEET
 } from "../constants/action-types";
-
-export function clearSpreadsheet() {
-  return {type: CLEAR_SPREADSHEET}
-};
 
 export function add10Rows() {
   return {type: ADD_10_ROWS}
+};
+
+export function changeCell(attribute, index, content) {
+  return {
+    type: CHANGE_CELL,
+    payload: {
+      index,
+      attribute,
+      content
+    }
+  }
+}
+
+export function clearSpreadsheet() {
+  return {type: CLEAR_SPREADSHEET}
 };

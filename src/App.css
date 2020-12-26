@@ -2,3 +2,32 @@
   padding-top: 20px;
   padding-bottom: 20px;
 }
+
+.toolbar {
+  display: flex;
+}
+
+.table {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+}
+
+.button .icon {
+  color: #FFF;
+  margin-right: 10px;
+}
+
+@media (min-width: 576px) {
+  .modal-dialog {
+    max-width: 700px;
+  }
+}
+
+/* .list-of-options {
+  padding-left: 15px;
+} */

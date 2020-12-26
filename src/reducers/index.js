@@ -1,27 +1,35 @@
+import update from 'immutability-helper';
+
 import {
   CLEAR_SPREADSHEET,
-  ADD_10_ROWS
+  ADD_10_ROWS,
+  CHANGE_CELL
 } from "../constants/action-types";
 
 const initialState = {
-  fields: [
+  attributes: [
     {
       name: "Date",
       type: "date",
+      required: false
     }, {
       name: "Select",
       type: "enum",
+      required: false,
       options: [
+        "",
         "Option 1",
         "Option 2",
         "Option 3"
       ]
     }, {
       name: "Text",
-      type: "text"
+      type: "text",
+      required: false
     }, {
       name: "Number",
-      type: "number"
+      type: "number",
+      required: false
     }
   ],
   entries: [
@@ -50,26 +58,38 @@ const initialState = {
 };
 
 function clearSpreadsheet() {
-  return {fields: [], entries: []};
+  return {attributes: [], entries: []};
 }
 
 function add10Rows(state) {
   const emptyEntry = {}
-  state.fields.forEach((field) => {
-    emptyEntry[field.name] = "";
+  state.attributes.forEach((attribute) => {
+    emptyEntry[attribute.name] = "";
   });
-  return {
-    ...state,
-    entries: state.entries.concat(Array(10).fill(emptyEntry))
-  };
+  return update(state, {
+    entries: {$push: Array(10).fill(emptyEntry)}
+  });
+}
+
+function changeCell(state, index, attribute, content) {
+  return update(state, {
+    entries: {
+      [index]: {
+        [attribute]: {$set: content}
+      }
+    }
+  });
 }
 
 function rootReducer(state = initialState, action) {
   switch (action.type) {
-    case CLEAR_SPREADSHEET:
-      return clearSpreadsheet();
     case ADD_10_ROWS:
       return add10Rows(state);
+    case CHANGE_CELL:
+      const {index, attribute, content} = action.payload;
+      return changeCell(state, index, attribute, content);
+    case CLEAR_SPREADSHEET:
+      return clearSpreadsheet();
     default:
       return state;
   }

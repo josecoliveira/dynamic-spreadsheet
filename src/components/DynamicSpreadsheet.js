@@ -1,4 +1,5 @@
 import React from 'react';
+import update from 'immutability-helper';
 
 import { connect } from "react-redux";
 import {
@@ -6,15 +7,33 @@ import {
   clearSpreadsheet
 } from "../actions/index";
 
-import Table from 'react-bootstrap/Table';
-import Button from 'react-bootstrap/Button';
+import {
+  Alert,
+  Button,
+  ButtonGroup,
+  ButtonToolbar,
+  Col,
+  Form,
+  FormControl,
+  InputGroup,
+  ListGroup,
+  Modal,
+  Row,
+  Table
+} from "react-bootstrap";
 
-import Head from './Head';
-import Row from './Row';
+import { 
+  FaColumns,
+  FaEraser,
+  FaPlus
+} from 'react-icons/fa';
+
+import DSHead from './DSHead';
+import DSRow from './DSRow';
 
 function mapStateToProps(state) {
   return {
-    fields: state.fields,
+    attributes: state.attributes,
     entries: state.entries
   }
 }
@@ -27,25 +46,250 @@ function mapDispatchToProps(dispatch) {
 }
 
 class DynamicSpreadsheet extends React.Component {
-  render() {
-    const fields = this.props.fields;
-    const entries = this.props.entries;
+  constructor(props) {
+    super(props);
+    this.state = {
+      showAddColumnModal: false,
+      addColumnName: "",
+      addColumnType: "select",
+      addColumnRequired: false,
+      addColumnOptions: ["op1", "op2"],
+      newOptionName: "",
+      showAddColumnWarning: false
+    }
+    this.handleCancelAddColumn = this.handleCancelAddColumn.bind(this);
+    this.handleSaveAddColumn = this.handleSaveAddColumn.bind(this);
+    this.handleAddNewOption = this.handleAddNewOption.bind(this);
+  }
+
+  handleCancelAddColumn() {
+    this.setState({
+      showAddColumnModal: false,
+      addColumnName: "",
+      addColumnType: "",
+      addColumnRequired: false,
+      addColumnOptions: [],
+      showAddColumnWarning: false
+    });
+  }
+
+  handleSaveAddColumn() {
+    const {
+      addColumnName,
+      addColumnType,
+      addColumnOptions
+    } = this.state;
+    if (addColumnName === "" || addColumnType === "" || addColumnOptions.length === 0) {
+      this.setState({showAddColumnWarning: true});
+    } else {
+      this.setState({
+        showAddColumnModal: false,
+        addColumnName: "",
+        addColumnType: "",
+        addColumnRequired: false,
+        addColumnOptions: [],
+        showAddColumnWarning: false
+      });
+    }
+  }
+
+  handleAddNewOption() {
+    this.setState((state) => {
+      const newState = update(state, {
+        addColumnOptions: {$push: [state.newOptionName]},
+        newOptionName: {$set: ""}
+      });
+      console.log(newState)
+      return newState;
+    });
+  }
+
+  renderButtonToolbar() {
     return (
-      <div>
-        <Table responsive size={"sm"}>
-          <Head fields={fields} />
-          <tbody>
-            {entries.map((entry, index) => (
-              <Row
-                key={index}
-                index={index}
-                entry={entry}
+      <ButtonToolbar>
+        <ButtonGroup className="mr-2">
+          <Button
+            className="button"
+            onClick={() => this.setState({showAddColumnModal: true})}
+          >
+            <FaColumns className="icon" />
+            Add column
+          </Button>
+          <Button className="button" onClick={this.props.add10Rows}>
+            <FaPlus className="icon" />
+            Add 10 rows
+          </Button>
+        </ButtonGroup>
+        <ButtonGroup className="mr-2">
+          <Button className="button" variant="danger" onClick={this.props.add10Rows}>
+            <FaEraser className="icon" />
+            Clear everything
+          </Button>
+        </ButtonGroup>
+      </ButtonToolbar>
+    );
+  }
+
+  renderTable() {
+    const { attributes, entries } = this.props;
+    return (
+      <Table className="table" responsive size="sm">
+        <DSHead attributes={attributes} />
+        <tbody>
+          {entries.map((entry, index) => (
+            <DSRow
+              key={index}
+              index={index}
+              entry={entry}
+            />
+          ))}
+        </tbody>
+      </Table>
+    );
+  }
+
+  renderListOfOptions() {
+    const { addColumnOptions, newOptionName} = this.state;
+    return (
+      <>
+        <Form.Group as={Row}>
+          <Form.Label column sm={2}>
+            Options
+          </Form.Label>
+          <Col sm={10}>
+            <ListGroup className="list-of-options">
+              {addColumnOptions.map((option, index) => (
+                <ListGroup.Item key={index}>{option}</ListGroup.Item>
+              ))}
+            </ListGroup>
+          </Col>
+        </Form.Group>
+        <Form.Group as={Row}>
+          <Col sm={{offset: 2, span: 10}} style={{"display": "flex"}}>
+            <InputGroup className="mb-3">
+              <FormControl
+                  type="text"
+                  placeholder="Type the new option here"
+                  value={newOptionName}
+                  onChange={(event) =>
+                    this.setState({newOptionName: event.target.value})
+                  }
               />
-            ))}
-          </tbody>
-        </Table>
-        <Button onClick={this.props.add10Rows}>Add 10 rows</Button>
-      </div>
+              <InputGroup.Append>
+                <Button
+                  className="button"
+                  onClick={this.handleAddNewOption}
+                >
+                  <FaPlus className="icon" />
+                  Add option
+                </Button>
+              </InputGroup.Append>
+            </InputGroup>
+          </Col>
+        </Form.Group>
+      </>
+    );
+  }
+
+  renderAddColumnModal() {
+    const {
+      showAddColumnModal,
+      addColumnName,
+      addColumnRequired,
+      addColumnType,
+      showAddColumnWarning
+    } = this.state;
+    return (
+      <Modal show={showAddColumnModal} onHide={this.handleHide}>
+        <Modal.Header>
+          <Modal.Title>Add Column</Modal.Title>
+          <p>{this.state.newOptionName}</p>
+        </Modal.Header>
+        <Form>
+          <Modal.Body>
+            {(() => {
+              if (showAddColumnWarning) {
+                return <Alert variant="danger">All fields must be filled.</Alert>
+              }
+            })()}
+            <Form.Group as={Row}>
+              <Form.Label column sm={2}>
+                Name
+              </Form.Label>
+              <Col sm={10}>
+                <Form.Control
+                  type="text"
+                  value={addColumnName}
+                  onChange={(event) =>
+                    this.setState({addColumnName: event.target.value})
+                  }
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group>
+              <Col sm={{offset: 2, span: 10}}>
+                <Form.Check
+                  type="checkbox"
+                  value={addColumnRequired}
+                  onChange={(event) =>
+                    this.setState({addColumnRequired: event.target.value})
+                  }
+                  label="Required"
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm={2}>
+                Type
+              </Form.Label>
+              <Col sm={10}>
+                <Form.Control
+                  as="select"
+                  value={addColumnType}
+                  onChange={(event) => {
+                    this.setState({addColumnType: event.target.value})
+                  }}
+                >
+                  <option></option>
+                  <option value="date">Date</option>
+                  <option value="select">List of Options</option>
+                  <option value="text">Text</option>
+                  <option value="number">Number</option>
+                </Form.Control>
+              </Col>
+            </Form.Group>
+            {(() => {
+              if (this.state.addColumnType === "select") {
+                return this.renderListOfOptions();
+              }
+            })()}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="danger"
+              onClick={this.handleCancelAddColumn}
+            >
+              Cancel
+            </Button>{' '}
+            <Button
+              variant="primary"
+              onClick={this.handleSaveAddColumn}
+            >
+              Save
+            </Button>
+          </Modal.Footer>
+        </Form>
+      </Modal>
+    );
+  }
+
+  render() {
+    return (
+      <>
+        {this.renderButtonToolbar()}
+        {this.renderTable()}
+        {this.renderAddColumnModal()}
+      </>
     );
   }
 }
