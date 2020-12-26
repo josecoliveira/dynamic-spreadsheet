@@ -21,7 +21,10 @@ class DSCell extends React.Component {
 
   validate(value = this.props.value) {
     const attribute = this.props.attribute;
-    if (value === "" && attribute.required) {
+    if (attribute.required && value === "") {
+      this.setState({invalid: true});
+    } else if (attribute.type === "number" && isNaN(value)) {
+      console.log("teste");
       this.setState({invalid: true});
     } else {
       this.setState({invalid: false});
@@ -34,7 +37,6 @@ class DSCell extends React.Component {
     const invalid = this.state.invalid;
     const index = this.props.index;
     const options = this.props.attribute.options;
-    console.log(value);
     return (
       <select
         value={value}
@@ -64,7 +66,7 @@ class DSCell extends React.Component {
         onChange={(event) => {
           this.props.changeCell(attribute.name, index, event.target.value);
         }}
-        onBlur={this.validate}
+        onBlur={() => this.validate(value)}
       />
     )
   }
