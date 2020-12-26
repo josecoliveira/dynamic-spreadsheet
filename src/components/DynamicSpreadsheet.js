@@ -22,14 +22,16 @@ import {
   Table
 } from "react-bootstrap";
 
-import { 
+import {
   FaColumns,
   FaEraser,
-  FaPlus
+  FaPlus,
+  FaTimes
 } from 'react-icons/fa';
 
 import DSHead from './DSHead';
 import DSRow from './DSRow';
+
 
 function mapStateToProps(state) {
   return {
@@ -60,6 +62,7 @@ class DynamicSpreadsheet extends React.Component {
     this.handleCancelAddColumn = this.handleCancelAddColumn.bind(this);
     this.handleSaveAddColumn = this.handleSaveAddColumn.bind(this);
     this.handleAddNewOption = this.handleAddNewOption.bind(this);
+    this.handleDeleteOption = this.handleDeleteOption.bind(this);
   }
 
   handleCancelAddColumn() {
@@ -104,6 +107,12 @@ class DynamicSpreadsheet extends React.Component {
     });
   }
 
+  handleDeleteOption(index) {
+    this.setState((state) => {
+      return update(state, {addColumnOptions: {$splice: [[index, 1]]}});
+    })
+  }
+
   renderButtonToolbar() {
     return (
       <ButtonToolbar>
@@ -112,17 +121,17 @@ class DynamicSpreadsheet extends React.Component {
             className="button"
             onClick={() => this.setState({showAddColumnModal: true})}
           >
-            <FaColumns className="icon" />
+            <FaColumns className="icon"/>
             Add column
           </Button>
           <Button className="button" onClick={this.props.add10Rows}>
-            <FaPlus className="icon" />
+            <FaPlus className="icon"/>
             Add 10 rows
           </Button>
         </ButtonGroup>
         <ButtonGroup className="mr-2">
           <Button className="button" variant="danger" onClick={this.props.add10Rows}>
-            <FaEraser className="icon" />
+            <FaEraser className="icon"/>
             Clear everything
           </Button>
         </ButtonGroup>
@@ -131,25 +140,25 @@ class DynamicSpreadsheet extends React.Component {
   }
 
   renderTable() {
-    const { attributes, entries } = this.props;
+    const {attributes, entries} = this.props;
     return (
       <Table className="table" responsive size="sm">
-        <DSHead attributes={attributes} />
+        <DSHead attributes={attributes}/>
         <tbody>
-          {entries.map((entry, index) => (
-            <DSRow
-              key={index}
-              index={index}
-              entry={entry}
-            />
-          ))}
+        {entries.map((entry, index) => (
+          <DSRow
+            key={index}
+            index={index}
+            entry={entry}
+          />
+        ))}
         </tbody>
       </Table>
     );
   }
 
   renderListOfOptions() {
-    const { addColumnOptions, newOptionName} = this.state;
+    const {addColumnOptions, newOptionName} = this.state;
     return (
       <>
         <Form.Group as={Row}>
@@ -159,7 +168,16 @@ class DynamicSpreadsheet extends React.Component {
           <Col sm={10}>
             <ListGroup className="list-of-options">
               {addColumnOptions.map((option, index) => (
-                <ListGroup.Item key={index}>{option}</ListGroup.Item>
+                <ListGroup.Item className="item" key={index}>
+                  <span className="option-name">{option}</span>
+                  <Button
+                    variant="danger"
+                    className="delete-button"
+                    onClick={() => this.handleDeleteOption(index)}
+                  >
+                    <FaTimes className="icon" className="icon"/>
+                  </Button>
+                </ListGroup.Item>
               ))}
             </ListGroup>
           </Col>
@@ -168,19 +186,19 @@ class DynamicSpreadsheet extends React.Component {
           <Col sm={{offset: 2, span: 10}} style={{"display": "flex"}}>
             <InputGroup className="mb-3">
               <FormControl
-                  type="text"
-                  placeholder="Type the new option here"
-                  value={newOptionName}
-                  onChange={(event) =>
-                    this.setState({newOptionName: event.target.value})
-                  }
+                type="text"
+                placeholder="Type the new option here"
+                value={newOptionName}
+                onChange={(event) =>
+                  this.setState({newOptionName: event.target.value})
+                }
               />
               <InputGroup.Append>
                 <Button
                   className="button"
                   onClick={this.handleAddNewOption}
                 >
-                  <FaPlus className="icon" />
+                  <FaPlus className="icon"/>
                   Add option
                 </Button>
               </InputGroup.Append>
@@ -200,7 +218,7 @@ class DynamicSpreadsheet extends React.Component {
       showAddColumnWarning
     } = this.state;
     return (
-      <Modal show={showAddColumnModal} onHide={this.handleHide}>
+      <Modal show={showAddColumnModal} backdrop="static" keyboard={false}>
         <Modal.Header>
           <Modal.Title>Add Column</Modal.Title>
           <p>{this.state.newOptionName}</p>

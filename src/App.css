@@ -28,6 +28,18 @@
   }
 }
 
+.list-of-options .item {
+  display: flex
+}
+
+.list-of-options .item .option-name {
+  flex: 1
+}
+
+.list-of-options .item .delete-button {
+  padding: 0px 4px
+}
+
 /* .list-of-options {
   padding-left: 15px;
 } */
