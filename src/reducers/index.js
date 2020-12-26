@@ -12,11 +12,11 @@ const initialState = {
     {
       name: "Date",
       type: "date",
-      required: false
+      required: true
     }, {
       name: "Select",
       type: "enum",
-      required: false,
+      required: true,
       options: [
         "",
         "Option 1",
@@ -26,11 +26,11 @@ const initialState = {
     }, {
       name: "Text",
       type: "text",
-      required: false
+      required: true
     }, {
       name: "Number",
       type: "number",
-      required: false
+      required: true
     }
   ],
   entries: [

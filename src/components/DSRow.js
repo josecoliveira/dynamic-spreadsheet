@@ -21,7 +21,7 @@ class DSRow extends React.Component {
         {attributes.map((attribute) => (
           <DSCell
             key={attribute.name}
-            attribute={attribute.name}
+            attribute={attribute}
             index={index}
             value={entry[attribute.name]}
           />

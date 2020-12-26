@@ -40,6 +40,10 @@
   padding: 0px 4px
 }
 
+input.invalid {
+  background-color: #ffb0b0
+}
+
 /* .list-of-options {
   padding-left: 15px;
 } */
