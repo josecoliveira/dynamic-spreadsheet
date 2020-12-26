@@ -3,7 +3,7 @@ import update from 'immutability-helper';
 
 import { connect } from "react-redux";
 import {
-  add10Rows,
+  add10Rows, addColumn,
   clearSpreadsheet
 } from "../actions/index";
 
@@ -43,6 +43,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     add10Rows: () => dispatch(add10Rows()),
+    addColumn: (name, type, required, options) => dispatch(addColumn(name, type, required, options)),
     clearSpreadsheet: () => dispatch(clearSpreadsheet()),
   };
 }
@@ -80,11 +81,13 @@ class DynamicSpreadsheet extends React.Component {
     const {
       addColumnName,
       addColumnType,
+      addColumnRequired,
       addColumnOptions
     } = this.state;
-    if (addColumnName === "" || addColumnType === "" || addColumnOptions.length === 0) {
+    if (addColumnName === "" || addColumnType === "" || (addColumnType === "select" && addColumnOptions.length === 0)) {
       this.setState({showAddColumnWarning: true});
     } else {
+      this.props.addColumn(addColumnName, addColumnType, addColumnRequired, addColumnOptions);
       this.setState({
         showAddColumnModal: false,
         addColumnName: "",
@@ -124,13 +127,19 @@ class DynamicSpreadsheet extends React.Component {
             <FaColumns className="icon"/>
             Add column
           </Button>
-          <Button className="button" onClick={this.props.add10Rows}>
-            <FaPlus className="icon"/>
-            Add 10 rows
-          </Button>
+          {(() => {
+            if (this.props.attributes.length !== 0) {
+              return (
+                <Button className="button" onClick={this.props.add10Rows}>
+                  <FaPlus className="icon"/>
+                  Add 10 rows
+                </Button>
+              )
+            }
+          })()}
         </ButtonGroup>
         <ButtonGroup className="mr-2">
-          <Button className="button" variant="danger" onClick={this.props.add10Rows}>
+          <Button className="button" variant="danger" onClick={this.props.clearSpreadsheet}>
             <FaEraser className="icon"/>
             Clear everything
           </Button>
@@ -175,7 +184,7 @@ class DynamicSpreadsheet extends React.Component {
                     className="delete-button"
                     onClick={() => this.handleDeleteOption(index)}
                   >
-                    <FaTimes className="icon" className="icon"/>
+                    <FaTimes className="icon"/>
                   </Button>
                 </ListGroup.Item>
               ))}
