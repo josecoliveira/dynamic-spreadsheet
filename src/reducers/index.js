@@ -84,7 +84,7 @@ function changeAttribute(state, oldName, newName) {
   ))
   return produce(state, (draft) => {
     draft.attributes[attributeIndex].name = newName;
-    draft.entries.map((entry, index) => {
+    draft.entries.forEach((entry, index) => {
       delete entry[oldName];
       entry[newName] = state.entries[index][oldName]
     });

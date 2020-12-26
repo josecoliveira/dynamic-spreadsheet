@@ -22,6 +22,7 @@ class DSHead extends React.Component {
                 value={attribute.name}
                 onChange={(event) => {
                   changeAttribute(attribute.name, event.target.value);
+                  console.log("test");
                 }}
               />
             </th>
