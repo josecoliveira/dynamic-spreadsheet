@@ -1,20 +1,29 @@
 import React from 'react';
 
 import DSCell from './DSCell';
+import { connect } from "react-redux";
+
+function mapStateToProps(state) {
+  return {
+    attributes: state.attributes,
+    entries: state.entries
+  }
+}
 
 class DSRow extends React.Component {
   render() {
     const index = this.props.index;
-    const entry = this.props.entry;
+    const attributes = this.props.attributes;
+    const entry = this.props.entries[index];
     return (
       <tr>
         <td>{index + 1}</td>
-        {Object.keys(entry).map((attribute, indexVal) => (
+        {attributes.map((attribute) => (
           <DSCell
-            key={indexVal}
-            attribute={attribute}
+            key={attribute.name}
+            attribute={attribute.name}
             index={index}
-            value={entry[attribute]}
+            value={entry[attribute.name]}
           />
         ))}
       </tr>
@@ -22,4 +31,7 @@ class DSRow extends React.Component {
   }
 }
 
-export default DSRow;
+export default connect(
+  mapStateToProps,
+  null
+)(DSRow);

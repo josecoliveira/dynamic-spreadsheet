@@ -166,7 +166,6 @@ class DynamicSpreadsheet extends React.Component {
           <DSRow
             key={index}
             index={index}
-            entry={entry}
           />
         ))}
         </tbody>

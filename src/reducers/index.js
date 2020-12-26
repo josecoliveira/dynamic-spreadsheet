@@ -2,7 +2,7 @@ import produce from 'immer';
 
 import {
   ADD_10_ROWS,
-  ADD_COLUMN,
+  ADD_COLUMN, CHANGE_ATTRIBUTE,
   CHANGE_CELL,
   CLEAR_SPREADSHEET
 } from "../constants/action-types";
@@ -78,6 +78,19 @@ function addColumn(state, attribute) {
   });
 }
 
+function changeAttribute(state, oldName, newName) {
+  const attributeIndex = state.attributes.findIndex((attribute) => (
+    attribute.name === oldName
+  ))
+  return produce(state, (draft) => {
+    draft.attributes[attributeIndex].name = newName;
+    draft.entries.map((entry, index) => {
+      delete entry[oldName];
+      entry[newName] = state.entries[index][oldName]
+    });
+  });
+}
+
 function changeCell(state, index, attribute, content) {
   return produce(state, (draft) => {
     draft.entries[index][attribute] = content;
@@ -96,6 +109,10 @@ function rootReducer(state = initialState, action) {
     case ADD_COLUMN: {
       const {attribute} = action.payload;
       return addColumn(state, attribute);
+    }
+    case CHANGE_ATTRIBUTE: {
+      const {oldName, newName} = action.payload;
+      return changeAttribute(state, oldName, newName);
     }
     case CHANGE_CELL: {
       const {index, attribute, content} = action.payload;

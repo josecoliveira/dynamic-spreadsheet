@@ -1,9 +1,7 @@
 import React from 'react';
 
 import { connect } from "react-redux";
-import {
-  changeCell,
-} from "../actions/index";
+import { changeCell } from "../actions/index";
 
 function mapDispatchToProps(dispatch) {
   return {
@@ -18,11 +16,10 @@ class DSCell extends React.Component {
     const index = this.props.index;
     const value = this.props.value;
     return (
-      <td key={index}>
+      <td>
         <input
           value={value}
           onChange={(event) => {
-            event.preventDefault();
             this.props.changeCell(attribute, index, event.target.value);
           }}
         />
