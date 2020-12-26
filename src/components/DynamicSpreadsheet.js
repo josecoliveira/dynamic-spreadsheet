@@ -26,7 +26,8 @@ import {
   FaColumns,
   FaEraser,
   FaPlus,
-  FaTimes
+  FaTimes,
+  FaSave
 } from 'react-icons/fa';
 
 import DSHead from './DSHead';
@@ -54,7 +55,7 @@ class DynamicSpreadsheet extends React.Component {
     this.state = {
       showAddColumnModal: false,
       addColumnName: "",
-      addColumnType: "text",
+      addColumnType: "",
       addColumnRequired: false,
       addColumnOptions: [],
       newOptionName: "",
@@ -299,15 +300,19 @@ class DynamicSpreadsheet extends React.Component {
           </Modal.Body>
           <Modal.Footer>
             <Button
+              className="button"
               variant="danger"
               onClick={this.handleCancelAddColumn}
             >
+              <FaTimes className="icon"/>
               Cancel
             </Button>{' '}
             <Button
+              className="button"
               variant="primary"
               onClick={this.handleSaveAddColumn}
             >
+              <FaSave className="icon"/>
               Save
             </Button>
           </Modal.Footer>

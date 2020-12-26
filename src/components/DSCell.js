@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 
 import { connect } from "react-redux";
 import { changeCell } from "../actions/index";
@@ -21,10 +22,19 @@ class DSCell extends React.Component {
 
   validate(value = this.props.value) {
     const attribute = this.props.attribute;
+    // if (attribute.type === "date") {
+    //   console.log("date");
+    //   console.log(value);
+    //   console.log(moment(value, "MM-DD-YYYY", true).isValid());
+    //   console.log(moment('20200-05-25', 'YYYY-MM-DD', true).isValid());
+    // }
     if (attribute.required && value === "") {
       this.setState({invalid: true});
     } else if (attribute.type === "number" && isNaN(value)) {
-      console.log("teste");
+      this.setState({invalid: true});
+    } else if (attribute.type === "date" && !moment(value, "MM-DD-YYYY", true).isValid()) {
+      console.log("date not valid");
+      console.log(moment(value, "MM-DD-YYYY", true).isValid());
       this.setState({invalid: true});
     } else {
       this.setState({invalid: false});
