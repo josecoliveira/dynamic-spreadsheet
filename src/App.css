@@ -40,7 +40,8 @@
   padding: 0px 4px
 }
 
-input.invalid {
+input.invalid,
+select.invalid {
   background-color: #ffb0b0
 }
 

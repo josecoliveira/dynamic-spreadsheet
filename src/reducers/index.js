@@ -15,13 +15,13 @@ const initialState = {
       required: true
     }, {
       name: "Select",
-      type: "enum",
+      type: "select",
       required: true,
       options: [
-        "",
         "Option 1",
         "Option 2",
-        "Option 3"
+        "Option 3",
+        "Option 4"
       ]
     }, {
       name: "Text",

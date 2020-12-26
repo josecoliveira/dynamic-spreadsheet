@@ -19,8 +19,7 @@ class DSCell extends React.Component {
     this.validate = this.validate.bind(this);
   }
 
-  validate() {
-    const value = this.props.value;
+  validate(value = this.props.value) {
     const attribute = this.props.attribute;
     if (value === "" && attribute.required) {
       this.setState({invalid: true});
@@ -29,21 +28,59 @@ class DSCell extends React.Component {
     }
   }
 
-  render() {
-    const attribute = this.props.attribute
-    const index = this.props.index;
+  renderSelect() {
     const value = this.props.value;
+    const attribute = this.props.attribute;
     const invalid = this.state.invalid;
+    const index = this.props.index;
+    const options = this.props.attribute.options;
+    console.log(value);
+    return (
+      <select
+        value={value}
+        onChange={(event) => {
+          this.props.changeCell(attribute.name, index, event.target.value);
+          this.validate(event.target.value);
+        }}
+        className={invalid ? "invalid" : null}
+      >
+        <option></option>
+        {options.map((option, index) => (
+          <option key={index} value={option}>{option}</option>
+        ))}
+      </select>
+    );
+  }
+
+  renderInput() {
+    const invalid = this.state.invalid;
+    const value = this.props.value;
+    const attribute = this.props.attribute;
+    const index = this.props.index;
+    return (
+      <input
+        className={invalid ? "invalid" : null}
+        value={value}
+        onChange={(event) => {
+          this.props.changeCell(attribute.name, index, event.target.value);
+        }}
+        onBlur={this.validate}
+      />
+    )
+  }
+
+  render() {
+    const attribute = this.props.attribute;
     return (
       <td>
-        <input
-          className={invalid ? "invalid" : null}
-          value={value}
-          onChange={(event) => {
-            this.props.changeCell(attribute.name, index, event.target.value);
-          }}
-          onBlur={this.validate}
-        />
+        {(() => {
+          if (attribute.type === "select") {
+            return this.renderSelect();
+          } else {
+            return this.renderInput();
+          }
+        })()}
+        
       </td>
     );
   }
