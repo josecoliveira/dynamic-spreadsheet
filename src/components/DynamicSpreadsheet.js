@@ -3,9 +3,11 @@ import produce from "immer";
 
 import { connect } from "react-redux";
 import {
-  add10Rows, addColumn,
+  add10Rows,
+  addColumn,
   clearSpreadsheet
 } from "../actions/index";
+import store from "../store"
 
 import {
   Alert,
@@ -63,6 +65,7 @@ class DynamicSpreadsheet extends React.Component {
     }
     this.handleCancelAddColumn = this.handleCancelAddColumn.bind(this);
     this.handleSaveAddColumn = this.handleSaveAddColumn.bind(this);
+    this.handleSave = this.handleSave.bind(this);
     this.handleAddNewOption = this.handleAddNewOption.bind(this);
     this.handleDeleteOption = this.handleDeleteOption.bind(this);
   }
@@ -108,6 +111,10 @@ class DynamicSpreadsheet extends React.Component {
     }
   }
 
+  handleSave() {
+    console.log(store.getState());
+  }
+
   handleAddNewOption() {
     this.setState((state) => (
       produce(state, (draft) => {
@@ -128,6 +135,15 @@ class DynamicSpreadsheet extends React.Component {
   renderButtonToolbar() {
     return (
       <ButtonToolbar>
+        <ButtonGroup className="mr-2">
+        <Button
+            className="button"
+            onClick={this.handleSave}
+          >
+            <FaSave className="icon"/>
+            Save
+          </Button>
+        </ButtonGroup>
         <ButtonGroup className="mr-2">
           <Button
             className="button"

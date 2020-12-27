@@ -8,54 +8,8 @@ import {
 } from "../constants/action-types";
 
 const initialState = {
-  attributes: [
-    {
-      name: "Date",
-      type: "date",
-      required: true
-    }, {
-      name: "Select",
-      type: "select",
-      required: true,
-      options: [
-        "Option 1",
-        "Option 2",
-        "Option 3",
-        "Option 4"
-      ]
-    }, {
-      name: "Text",
-      type: "text",
-      required: true
-    }, {
-      name: "Number",
-      type: "number",
-      required: true
-    }
-  ],
-  entries: [
-    {
-      "Date": "12-23-2020",
-      "Select": "Option 1",
-      "Text": "Text 1",
-      "Number": 1
-    }, {
-      "Date": "12-24-2020",
-      "Select": "Option 2",
-      "Text": "Text 2",
-      "Number": 2
-    }, {
-      "Date": "12-25-2020",
-      "Select": "Option 3",
-      "Text": "Text 3",
-      "Number": 3
-    }, {
-      "Date": "12-26-2020",
-      "Select": "Option 4",
-      "Text": "Text 4",
-      "Number": 4
-    }
-  ]
+  attributes: [],
+  entries: []
 };
 
 function add10Rows(state) {
