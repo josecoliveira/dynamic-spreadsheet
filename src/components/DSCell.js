@@ -22,19 +22,12 @@ class DSCell extends React.Component {
 
   validate(value = this.props.value) {
     const attribute = this.props.attribute;
-    // if (attribute.type === "date") {
-    //   console.log("date");
-    //   console.log(value);
-    //   console.log(moment(value, "MM-DD-YYYY", true).isValid());
-    //   console.log(moment('20200-05-25', 'YYYY-MM-DD', true).isValid());
-    // }
     if (attribute.required && value === "") {
       this.setState({invalid: true});
     } else if (attribute.type === "number" && isNaN(value)) {
       this.setState({invalid: true});
-    } else if (attribute.type === "date" && !moment(value, "MM-DD-YYYY", true).isValid()) {
-      console.log("date not valid");
-      console.log(moment(value, "MM-DD-YYYY", true).isValid());
+    } else if (attribute.type === "date" && value !== "" && !moment(value, "MM-DD-YYYY", true).isValid()) {
+
       this.setState({invalid: true});
     } else {
       this.setState({invalid: false});
@@ -72,6 +65,7 @@ class DSCell extends React.Component {
     return (
       <input
         className={invalid ? "invalid" : null}
+        placeholder={attribute.type === "date" ? "MM-DD-YYYY" : null}
         value={value}
         onChange={(event) => {
           this.props.changeCell(attribute.name, index, event.target.value);
