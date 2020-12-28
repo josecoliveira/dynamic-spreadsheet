@@ -40,7 +40,7 @@ All there are 4 components for rendering the spreadsheet located at `components\
 
 The state of the spreadsheet is handled by Redux at `actions\`, `constants\action-types.js`, `reducers\` and `store\`.
 
-You can implement a saving mechanism at `api\`
+You can implement a saving mechanism at `api\`.
 
 ## Challenges
 
@@ -48,9 +48,9 @@ Even though I worked with React Native 2 years ago, I have learned some concepts
 
 ### Managing top level states
 
-In this project, I learned about Redux, a state container for JavaScript app. When I was implementing the update of the cells content at `DSCell`, and my state storing the spreadsheet was at the top level component `DynamicSpreadsheet`, I realized that to propagate the update through the components. Then, I followed the recommmendation of the test and learn Redux.
+In this project, I learned about Redux, a state container for JavaScript app. When I was implementing the update of the cells content at `DSCell`, and my state storing the spreadsheet was at the top level component `DynamicSpreadsheet`, I realized that to propagate the update through the components. Then, I followed the recommmendation of the test and learned Redux.
 
-The spreadsheet is the only information stored using Redux because is the top level informations that is updated by all components. I used [this tutorial](https://www.valentinog.com/blog/redux/#react-redux-tutorial-getting-to-know-the-redux-store) to implement it.
+The spreadsheet is the only information stored using Redux, because is the top level information that is updated by all components. I used [this tutorial](https://www.valentinog.com/blog/redux/#react-redux-tutorial-getting-to-know-the-redux-store) to implement it.
 
 ### Immutable states
 
@@ -58,7 +58,7 @@ While learning Redux, I also learned that states must be immutable and I needed 
 
 ## Next Step
 
-### Make the `DynamicSpreadsheet` independent
+### Make `DynamicSpreadsheet` independent
 
 `DynamicSpreadsheet` should follow the single-responsability principle, that is, change states inside the component shouldn't change the state of the whole app. It is important, because the same component could be used at another aplications without major modifications.
 
